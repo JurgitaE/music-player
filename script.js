@@ -2,6 +2,10 @@ const image = document.querySelector('img');
 const title = document.getElementById('title');
 const artist = document.getElementById('artist');
 const music = document.querySelector('audio');
+const progressContainer = document.getElementById('progress-container');
+const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
 const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
@@ -71,5 +75,26 @@ function nextSong() {
 
 loadSong(songs[songIndex]);
 
+function updateProgressBar(e) {
+    if (isPlaying) {
+        const { currentTime, duration } = e.srcElement;
+        progress.style.width = `${(currentTime / duration) * 100}%`;
+        const durationMinutes = Math.floor(duration / 60);
+        const durationSeconds = `${duration % 60 >= 10 ? '' : '0'}${Math.floor(duration % 60)}`;
+
+        progress.style.width = `${(currentTime / duration) * 100}%`;
+
+        const currentMinutes = Math.floor(currentTime / 60);
+        const currentSeconds = `${currentTime % 60 >= 10 ? '' : '0'}${Math.floor(currentTime % 60)}`;
+
+        if (duration) {
+            durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+            currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+        }
+    }
+}
+
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
+
+music.addEventListener('timeupdate', updateProgressBar);
